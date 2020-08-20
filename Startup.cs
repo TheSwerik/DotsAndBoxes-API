@@ -20,6 +20,16 @@ namespace API
         {
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
+            app.UseCors(
+                builder =>
+                {
+                    builder.WithOrigins("https://localhost:5001")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                    // .SetIsOriginAllowed(x => x.Contains("https://localhost:5001", StringComparison.InvariantCultureIgnoreCase))
+                }
+            );
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
