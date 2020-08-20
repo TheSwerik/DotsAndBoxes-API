@@ -26,7 +26,6 @@ namespace API
                     builder.WithOrigins("https://localhost:5001")
                            .AllowAnyMethod()
                            .AllowAnyHeader();
-                    // .SetIsOriginAllowed(x => x.Contains("https://localhost:5001", StringComparison.InvariantCultureIgnoreCase))
                 }
             );
 
