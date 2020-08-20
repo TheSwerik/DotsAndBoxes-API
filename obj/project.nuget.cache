@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "w3hkHOp/X2QCozeGxixK5e8ULfrgoA696ojVHB33zBCFokSTOaEMEmKwmpvCdZxWHCP3t5BrvtzicInS6a89gw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\seibel\\IdeaProjects\\Privat\\DotsAndBoxes\\API\\API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\seibel\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\seibel\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\seibel\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.3\\microsoft.aspnetcore.app.ref.3.1.3.nupkg.sha512"
+  ],
+  "logs": []
+}
