@@ -9,16 +9,22 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Consumes("application/json", "text/plain")]
+    [Produces("application/json", "text/plain")]
     public class UserController : ControllerBase
     {
-        private readonly List<User> _users;
-
         private readonly ILogger<UserController> _logger;
+        private readonly List<User> _users;
 
         public UserController(ILogger<UserController> logger)
         {
             _logger = logger;
-            _users = new List<User>();
+            _users = new List<User>
+                     {
+                         new User {Username = "A", Id = Guid.NewGuid()},
+                         new User {Username = "B", Id = Guid.NewGuid()},
+                         new User {Username = "C", Id = Guid.NewGuid()}
+                     };
         }
 
         [HttpGet] public IActionResult GetAllUsers() { return new OkObjectResult(_users); }
@@ -26,11 +32,10 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult CreateUser([FromBody] string username)
         {
-            Console.WriteLine($"newUserName: {username}");
-            var newUser = new User() {Username = username, Id = Guid.NewGuid()};
+            var newUser = new User {Username = username, Id = Guid.NewGuid()};
             while (_users.Any(u => u.Id == newUser.Id)) newUser.Id = Guid.NewGuid();
             _users.Add(newUser);
-            Console.WriteLine(new OkObjectResult(newUser));
+            Console.WriteLine($"Created new User: {newUser}");
             return new OkObjectResult(newUser);
         }
     }
