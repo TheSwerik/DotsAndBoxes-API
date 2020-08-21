@@ -1,42 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using API.Entities;
+﻿using API.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Consumes("application/json", "text/plain")]
-    [Produces("application/json", "text/plain")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
-        private readonly List<User> _users;
+        private readonly UserService _userService;
 
-        public UserController(ILogger<UserController> logger)
-        {
-            _logger = logger;
-            _users = new List<User>
-                     {
-                         new User {Username = "A", Id = Guid.NewGuid()},
-                         new User {Username = "B", Id = Guid.NewGuid()},
-                         new User {Username = "C", Id = Guid.NewGuid()}
-                     };
-        }
+        public UserController(UserService userService) { _userService = userService; }
 
-        [HttpGet] public IActionResult GetAllUsers() { return new OkObjectResult(_users); }
+        [HttpGet] public IActionResult GetAllUsers() { return new OkObjectResult(_userService.GetAllUsers()); }
 
         [HttpPost]
         public IActionResult CreateUser([FromBody] string username)
         {
-            var newUser = new User {Username = username, Id = Guid.NewGuid()};
-            while (_users.Any(u => u.Id == newUser.Id)) newUser.Id = Guid.NewGuid();
-            _users.Add(newUser);
-            Console.WriteLine($"Created new User: {newUser}");
-            return new OkObjectResult(newUser);
+            return new OkObjectResult(_userService.CreateUser(username));
         }
     }
 }
