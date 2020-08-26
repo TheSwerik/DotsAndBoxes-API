@@ -27,5 +27,6 @@ namespace API.Services
         }
 
         public IEnumerable<User> GetAllUsers() { return _users; }
+        public User GetUser(Guid id) { return _users.Find(u => u.Id == id); }
     }
 }

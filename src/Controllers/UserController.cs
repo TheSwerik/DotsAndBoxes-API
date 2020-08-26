@@ -1,4 +1,5 @@
-﻿using API.Services;
+﻿using System;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -13,10 +14,13 @@ namespace API.Controllers
 
         [HttpGet] public IActionResult GetAllUsers() { return new OkObjectResult(_userService.GetAllUsers()); }
 
+        [HttpGet("{id:guid}")]
+        public IActionResult GetUser(Guid id) { return new OkObjectResult(_userService.GetUser(id)); }
+
         [HttpPost]
         public IActionResult CreateUser([FromBody] string username)
         {
-            return new OkObjectResult(_userService.CreateUser(username));
+            return new CreatedResult("", _userService.CreateUser(username));
         }
     }
 }
