@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 using API.Database;
 using API.Database.Entities;
 using Microsoft.Extensions.Logging;
@@ -30,13 +32,16 @@ namespace API.Services
         public IEnumerable<User> GetAllUsers() { return _apiContext.Users; }
         public User GetUser(Guid id) { return _apiContext.Users.Find(id); }
 
-        public User LoginUser(string username, string password)
+        public User LoginUser(string authorization)
         {
+            var decoded = Convert.FromBase64String(authorization.Replace("Basic ",""));
+            var credentials = Encoding.GetEncoding("ISO-8859-1").GetString(decoded).Split(':');
             var x =  _apiContext.Users.FirstOrDefault(
                 u =>
-                    u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase) &&
-                    u.PasswordHash.Equals(password));
-            Console.WriteLine(x);
+                    u.Username.Equals(credentials[0], StringComparison.InvariantCultureIgnoreCase) &&
+                    u.PasswordHash.Equals(credentials[1]));
+            Console.WriteLine(credentials[1]);
+            Console.WriteLine( _apiContext.Users.FirstOrDefault(u=>u.Username.Equals(credentials[0], StringComparison.InvariantCultureIgnoreCase)));
             return x;
         }
     }

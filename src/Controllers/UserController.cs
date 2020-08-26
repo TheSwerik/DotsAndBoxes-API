@@ -29,12 +29,9 @@ namespace API.Controllers
         [HttpGet("login")]
         public IActionResult LoginUser()
         {
-            var authorization = HttpContext.Request.Headers["Authorization"];
-            
-            // var loggedInUser = _userService.LoginUser(body.username, body.password);
-            // if (loggedInUser == null) return new UnauthorizedResult();
-            // else return new OkObjectResult(loggedInUser);
-            return new OkResult();
+            var loggedInUser = _userService.LoginUser(HttpContext.Request.Headers["Authorization"]);
+            if (loggedInUser == null) return new UnauthorizedResult();
+            else return new OkObjectResult(loggedInUser);
         }
     }
 }
