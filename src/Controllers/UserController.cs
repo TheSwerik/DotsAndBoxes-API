@@ -1,6 +1,8 @@
 ﻿using System;
 using API.Database.Entities;
 using API.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -22,6 +24,17 @@ namespace API.Controllers
         public IActionResult CreateUser([FromBody] User user)
         {
             return new CreatedResult("", _userService.CreateUser(user));
+        }
+
+        [HttpGet("login")]
+        public IActionResult LoginUser()
+        {
+            var authorization = HttpContext.Request.Headers["Authorization"];
+            
+            // var loggedInUser = _userService.LoginUser(body.username, body.password);
+            // if (loggedInUser == null) return new UnauthorizedResult();
+            // else return new OkObjectResult(loggedInUser);
+            return new OkResult();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using API.Database;
 using API.Database.Entities;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ namespace API.Services
 
         public User CreateUser(User user)
         {
-            var newUser = new User(user.Username, user.PasswordHash, user.PasswordSalt);
+            var newUser = new User(user.Username, user.PasswordHash);
             _apiContext.Users.Add(newUser);
             _apiContext.SaveChanges();
             _logger.LogInformation($"Created new User: {newUser}");
@@ -28,5 +29,15 @@ namespace API.Services
 
         public IEnumerable<User> GetAllUsers() { return _apiContext.Users; }
         public User GetUser(Guid id) { return _apiContext.Users.Find(id); }
+
+        public User LoginUser(string username, string password)
+        {
+            var x =  _apiContext.Users.FirstOrDefault(
+                u =>
+                    u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase) &&
+                    u.PasswordHash.Equals(password));
+            Console.WriteLine(x);
+            return x;
+        }
     }
 }
