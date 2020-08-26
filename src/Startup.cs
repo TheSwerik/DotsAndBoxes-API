@@ -1,6 +1,10 @@
+using System;
+using API.Database;
+using API.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +21,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"));
             services.AddSingleton<UserService>();
         }
 
@@ -41,6 +46,30 @@ namespace API
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+
+            var context = app.ApplicationServices.GetService<ApiContext>();
+            AddTestData(context);
+        }
+
+        private static void AddTestData(ApiContext context)
+        {
+            var testUser1 = new User
+                            {
+                                Id = new Guid(),
+                                Username = "Erik"
+                            };
+
+            context.Users.Add(testUser1);
+
+            var testUser2 = new User
+                            {
+                                Id = new Guid(),
+                                Username = "Dennis"
+                            };
+            context.Users.Add(testUser2);
+
+            context.SaveChanges();
         }
     }
 }
