@@ -1,4 +1,6 @@
-﻿using API.Entities;
+﻿// ReSharper disable UnusedAutoPropertyAccessor.Global
+
+using API.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Database

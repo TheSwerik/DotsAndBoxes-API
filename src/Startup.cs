@@ -1,6 +1,5 @@
-using System;
 using API.Database;
-using API.Entities;
+using API.Database.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,7 +20,8 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"));
+            services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"),
+                                              ServiceLifetime.Singleton);
             services.AddSingleton<UserService>();
         }
 
@@ -54,19 +54,10 @@ namespace API
 
         private static void AddTestData(ApiContext context)
         {
-            var testUser1 = new User
-                            {
-                                Id = new Guid(),
-                                Username = "Erik"
-                            };
-
+            var testUser1 = new User("Erik", "1", "1");
             context.Users.Add(testUser1);
 
-            var testUser2 = new User
-                            {
-                                Id = new Guid(),
-                                Username = "Dennis"
-                            };
+            var testUser2 = new User("Dennis", "2", "2");
             context.Users.Add(testUser2);
 
             context.SaveChanges();

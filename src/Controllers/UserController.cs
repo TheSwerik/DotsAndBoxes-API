@@ -1,4 +1,5 @@
 ﻿using System;
+using API.Database.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,9 @@ namespace API.Controllers
         public IActionResult GetUser(Guid id) { return new OkObjectResult(_userService.GetUser(id)); }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] string username)
+        public IActionResult CreateUser([FromBody] User user)
         {
-            return new CreatedResult("", _userService.CreateUser(username));
+            return new CreatedResult("", _userService.CreateUser(user));
         }
     }
 }
