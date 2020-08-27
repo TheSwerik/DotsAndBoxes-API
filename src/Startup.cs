@@ -61,7 +61,7 @@ namespace API
 
         private static void AddTestData(ApiContext context)
         {
-            var testUser1 = new User("Erik", "i551CkevribikEUMBvlqgStoUnY71V1iNRu6GulA/jvnCr/muhrr8A==");
+            var testUser1 = new User("Erik", "i551CkevribikEUMBvlqgStoUnZsaIt6cevVixESsSM49sL53nOndg==");
             context.Users.Add(testUser1);
 
             var testUser2 = new User("Dennis", "2");

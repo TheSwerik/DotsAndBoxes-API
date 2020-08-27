@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using API.Database.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -48,8 +47,6 @@ namespace API.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] AuthenticateModel model)
         {
-            Console.WriteLine(string.Join("\n", Request.Headers.Keys));
-            Console.WriteLine(model);
             var user = await _userService.Authenticate(model.Username, model.Password);
 
             if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});

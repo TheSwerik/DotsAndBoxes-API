@@ -44,8 +44,8 @@ namespace API.Services
         public async Task<User> Authenticate(string username, string password)
         {
             var user = await Task.Run(() => _apiContext.Users.SingleOrDefault(
-                                          x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase)
-                                               && x.Password == password));
+                                          u => u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase)
+                                               && u.Password.Equals(password, StringComparison.Ordinal)));
 
             return user?.WithoutPassword();
         }

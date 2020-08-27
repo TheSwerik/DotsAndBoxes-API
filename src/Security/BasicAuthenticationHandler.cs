@@ -29,7 +29,6 @@ namespace API.Security
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            Console.WriteLine(string.Join("\n", Request.Headers.Keys));
             if (!Request.Headers.ContainsKey("Authorization"))
                 return AuthenticateResult.Fail("Missing Authorization Header");
 
