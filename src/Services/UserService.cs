@@ -11,11 +11,11 @@ namespace API.Services
         private readonly ApiContext _apiContext;
         private readonly ILogger<UserService> _logger;
 
-        // public UserService(ILogger<UserService> logger, ApiContext apiContext)
-        // {
-        //     _logger = logger;
-        //     _apiContext = apiContext;
-        // }
+        public UserService(ILogger<UserService> logger, ApiContext apiContext)
+        {
+            _logger = logger;
+            _apiContext = apiContext;
+        }
 
         public User CreateUser(User user)
         {
