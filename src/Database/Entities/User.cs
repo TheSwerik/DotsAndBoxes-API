@@ -13,7 +13,7 @@ namespace API.Database.Entities
             PasswordSalt = passwordSalt;
         }
 
-        [Key] public Guid Id { get; }
+        [Key] public Guid Id { get; set;  }
 
         public string Username { get; set; }
         public string PasswordHash { get; set; }
