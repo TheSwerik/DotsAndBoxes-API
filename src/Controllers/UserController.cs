@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using API.Database.Entities;
+﻿using API.Database.Entities;
 using API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,9 +36,9 @@ namespace API.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] AuthenticateModel model)
+        public IActionResult Register([FromBody] AuthenticateModel model)
         {
-            var user = await _userService.Register(model);
+            var user = _userService.Register(model);
             if (user == null) return Conflict(new {message = "User with this Username is already exists."});
             return Ok(user);
         }

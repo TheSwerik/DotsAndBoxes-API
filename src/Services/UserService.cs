@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using API.Database;
 using API.Database.DTOs;
 using API.Database.Entities;
@@ -33,13 +32,13 @@ namespace API.Services
 
         #region Authentication
 
-        public async Task<UserDTO> Register(AuthenticateModel model)
+        public UserDTO Register(AuthenticateModel model)
         {
             if (_apiContext.Users.ToList().Any(u => u.HasSameUsernameAs(model))) return null;
 
             var user = new User(model.Username, SecurityService.HashPassword(model.Password));
-            await _apiContext.Users.AddAsync(user);
-            await _apiContext.SaveChangesAsync();
+            _apiContext.Users.Add(user);
+            _apiContext.SaveChanges();
             _logger.LogInformation($"Created new User: {user}");
             return user.ToDTO();
         }
