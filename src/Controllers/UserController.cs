@@ -1,8 +1,5 @@
-﻿using System;
-using API.Database.Entities;
+﻿using API.Database.Entities;
 using API.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -17,8 +14,8 @@ namespace API.Controllers
 
         [HttpGet] public IActionResult GetAllUsers() { return new OkObjectResult(_userService.GetAllUsers()); }
 
-        [HttpGet("{id:guid}")]
-        public IActionResult GetUser(Guid id) { return new OkObjectResult(_userService.GetUser(id)); }
+        [HttpGet("{username:string}")]
+        public IActionResult GetUser(string username) { return new OkObjectResult(_userService.GetUser(username)); }
 
         [HttpPost]
         public IActionResult CreateUser([FromBody] User user)
@@ -31,7 +28,7 @@ namespace API.Controllers
         {
             var loggedInUser = _userService.LoginUser(HttpContext.Request.Headers["Authorization"]);
             if (loggedInUser == null) return new UnauthorizedResult();
-            else return new OkObjectResult(loggedInUser);
+            return new OkObjectResult(loggedInUser);
         }
     }
 }
