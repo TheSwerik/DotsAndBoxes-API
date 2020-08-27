@@ -7,14 +7,13 @@ namespace API.Database.Entities
     {
         public User(string username, string passwordHash, string passwordSalt)
         {
-            //TODO: Decide whether this is safe enough
             Id = Guid.NewGuid();
             Username = username;
             PasswordHash = passwordHash;
             PasswordSalt = passwordSalt;
         }
 
-        [Key] public Guid Id { get; private set; }
+        [Key] public Guid Id { get; }
 
         public string Username { get; set; }
         public string PasswordHash { get; set; }
