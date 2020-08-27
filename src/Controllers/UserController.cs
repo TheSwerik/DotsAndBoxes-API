@@ -35,7 +35,12 @@ namespace API.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public IActionResult CreateUser([FromBody] User user) { return Created("", _userService.CreateUser(user)); }
+        public async Task<IActionResult> CreateUser([FromBody] AuthenticateModel model)
+        {
+            var user = await _userService.CreateUser(model);
+            if (user == null) return Conflict(new {message = "User with this Username is already exists."});
+            return Ok(user);
+        }
 
         #region Authentification
 
@@ -53,7 +58,6 @@ namespace API.Controllers
         public async Task<IActionResult> Authenticate([FromBody] AuthenticateModel model)
         {
             var user = await _userService.Authenticate(model.Username, model.Password);
-
             if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
             return Ok(user);
         }

@@ -35,13 +35,19 @@ namespace API.Services
             return await Task.Run(() => _apiContext.Users.Find(username).WithoutPassword());
         }
 
-        public User CreateUser(User user)
+        public async Task<User> CreateUser(AuthenticateModel model)
         {
-            var newUser = new User(user.Username, user.Password);
-            _apiContext.Users.Add(newUser);
-            _apiContext.SaveChanges();
-            _logger.LogInformation($"Created new User: {newUser}");
-            return newUser.WithoutPassword();
+            return await Task.Run(
+                       () =>
+                       {
+                           if (_apiContext.Users.ToList().Any(u => u.HasSameUsernameAs(model))) return null;
+
+                           var user = new User(model.Username, model.Password);
+                           _apiContext.Users.Add(user);
+                           _apiContext.SaveChanges();
+                           _logger.LogInformation($"Created new User: {user}");
+                           return user.WithoutPassword();
+                       });
         }
 
         #region Authentification
