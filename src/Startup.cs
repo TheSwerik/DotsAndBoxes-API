@@ -1,6 +1,8 @@
 using API.Database;
 using API.Database.Entities;
+using API.Security;
 using API.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +24,11 @@ namespace API
             services.AddControllers();
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"),
                                               ServiceLifetime.Singleton);
-            services.AddSingleton<UserService>();
+
+            services.AddAuthentication("BasicAuthentication")
+                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
+            services.AddScoped<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +49,7 @@ namespace API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

@@ -6,15 +6,15 @@ namespace API.Database.Entities
     {
         public User() { }
 
-        public User(string username, string passwordHash)
+        public User(string username, string password)
         {
             Username = username;
-            PasswordHash = passwordHash;
+            Password = password;
         }
 
         [Key] public string Username { get; set; }
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
 
-        public override string ToString() { return $"{{ Username: {Username}  | Password: {PasswordHash} }}"; }
+        public override string ToString() { return $"{{ Username: {Username}  | Password: {Password} }}"; }
     }
 }

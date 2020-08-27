@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using API.Database;
 using API.Database.Entities;
 using Microsoft.Extensions.Logging;
@@ -21,28 +21,40 @@ namespace API.Services
 
         public User CreateUser(User user)
         {
-            var newUser = new User(user.Username, user.PasswordHash);
+            var newUser = new User(user.Username, user.Password);
             _apiContext.Users.Add(newUser);
             _apiContext.SaveChanges();
             _logger.LogInformation($"Created new User: {newUser}");
             return newUser;
         }
 
-        public IEnumerable<User> GetAllUsers() { return _apiContext.Users; }
-        public User GetUser(string username) { return _apiContext.Users.Find(username); }
-
-        public User LoginUser(string authorization)
+        // public User LoginUser(string authorization)
+        // {
+        //     var decoded = Convert.FromBase64String(authorization.Replace("Basic ", ""));
+        //     var credentials = Encoding.GetEncoding("ISO-8859-1").GetString(decoded).Split(':');
+        //     var x = _apiContext.Users.FirstOrDefault(
+        //         u =>
+        //             u.Username.Equals(credentials[0], StringComparison.InvariantCultureIgnoreCase) &&
+        //             u.PasswordHash.Equals(credentials[1]));
+        //     Console.WriteLine(credentials[1]);
+        //     Console.WriteLine(_apiContext.Users.FirstOrDefault(
+        //                           u => u.Username.Equals(credentials[0], StringComparison.InvariantCultureIgnoreCase)));
+        //     return x;
+        // }
+        public async Task<User> Authenticate(string username, string password)
         {
-            var decoded = Convert.FromBase64String(authorization.Replace("Basic ", ""));
-            var credentials = Encoding.GetEncoding("ISO-8859-1").GetString(decoded).Split(':');
-            var x = _apiContext.Users.FirstOrDefault(
-                u =>
-                    u.Username.Equals(credentials[0], StringComparison.InvariantCultureIgnoreCase) &&
-                    u.PasswordHash.Equals(credentials[1]));
-            Console.WriteLine(credentials[1]);
-            Console.WriteLine(_apiContext.Users.FirstOrDefault(
-                                  u => u.Username.Equals(credentials[0], StringComparison.InvariantCultureIgnoreCase)));
-            return x;
+            var user = await Task.Run(() => _apiContext.Users.SingleOrDefault(
+                                          x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase)
+                                               && x.Password == password));
+
+            return user?.WithoutPassword();
         }
+
+        public async Task<IEnumerable<User>> GetAll()
+        {
+            return await Task.Run(() => _apiContext.Users.WithoutPasswords());
+        }
+
+        public async Task<User> Get(string username) { return await Task.Run(() => _apiContext.Users.Find(username)); }
     }
 }
