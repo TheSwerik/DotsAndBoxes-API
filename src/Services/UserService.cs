@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using API.Database;
+using API.Database.DTOs;
 using API.Database.Entities;
+using API.Security;
 using Microsoft.Extensions.Logging;
 
 namespace API.Services
@@ -25,44 +28,38 @@ namespace API.Services
 
         #region Methods
 
-        public async Task<IEnumerable<User>> GetAll()
+        public IEnumerable<UserDTO> GetAll() { return _apiContext.Users.ToDTO(); }
+        public UserDTO Get(string username) { return _apiContext.Users.Find(username).ToDTO(); }
+
+        #region Authentication
+
+        public async Task<UserDTO> Register(AuthenticateModel model)
         {
-            return await Task.Run(() => _apiContext.Users.WithoutPasswords());
+            if (_apiContext.Users.ToList().Any(u => u.HasSameUsernameAs(model))) return null;
+
+            var user = new User(model.Username, SecurityService.HashPassword(model.Password));
+            await _apiContext.Users.AddAsync(user);
+            await _apiContext.SaveChangesAsync();
+            _logger.LogInformation($"Created new User: {user}");
+            return user.ToDTO();
         }
 
-        public async Task<User> Get(string username)
+        public UserDTO Login(string encodedAuthorization)
         {
-            return await Task.Run(() => _apiContext.Users.Find(username).WithoutPassword());
+            encodedAuthorization = encodedAuthorization.Replace("Basic ", "");
+            var userData = Encoding.GetEncoding("ISO-8859-1")
+                                   .GetString(Convert.FromBase64String(encodedAuthorization))
+                                   .Split(":");
+            return Authenticate(userData[0], userData[1])?.ToDTO();
         }
 
-        public async Task<User> CreateUser(AuthenticateModel model)
+        public User Authenticate(string username, string password)
         {
-            return await Task.Run(
-                       () =>
-                       {
-                           if (_apiContext.Users.ToList().Any(u => u.HasSameUsernameAs(model))) return null;
-
-                           var user = new User(model.Username, model.Password);
-                           _apiContext.Users.Add(user);
-                           _apiContext.SaveChanges();
-                           _logger.LogInformation($"Created new User: {user}");
-                           return user.WithoutPassword();
-                       });
-        }
-
-        #region Authentification
-
-        public async Task<string> GetSalt(string username)
-        {
-            return await Task.Run(() => _apiContext.Users.Find(username).GetSalt());
-        }
-
-        public async Task<User> Authenticate(string username, string password)
-        {
-            var user = await Task.Run(() => _apiContext.Users.SingleOrDefault(
-                                          u => u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase)
-                                               && u.Password.Equals(password, StringComparison.Ordinal)));
-            return user?.WithoutPassword();
+            var foundUser = _apiContext.Users.SingleOrDefault(
+                u => u.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase));
+            if (foundUser == null) return null;
+            password = SecurityService.HashPassword(password, foundUser.GetSalt());
+            return foundUser.Password.Equals(password, StringComparison.Ordinal) ? foundUser : null;
         }
 
         #endregion
