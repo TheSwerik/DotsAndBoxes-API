@@ -16,5 +16,7 @@ namespace API
             user.Password = null;
             return user;
         }
+
+        public static string GetSalt(this User user) { return user.Password.Substring(0, 27) + '='; }
     }
 }

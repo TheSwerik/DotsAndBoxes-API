@@ -12,8 +12,8 @@ namespace API.Database.Entities
             Password = password;
         }
 
-        [Key] public string Username { get; set; }
-        public string Password { get; set; }
+        [Key] [Required] public string Username { get; set; }
+        [Required] public string Password { get; set; }
 
         public override string ToString() { return $"{{ Username: {Username}  | Password: {Password} }}"; }
     }

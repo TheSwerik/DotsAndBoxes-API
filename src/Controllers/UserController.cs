@@ -12,9 +12,15 @@ namespace API.Controllers
     [Produces("application/json", "application/+json")]
     public class UserController : ControllerBase
     {
+        #region Attributes
+
         private readonly UserService _userService;
 
         public UserController(UserService userService) { _userService = userService; }
+
+        #endregion
+
+        #region Methods
 
         [HttpGet] public async Task<IActionResult> GetAll() { return Ok(await _userService.GetAll()); }
 
@@ -27,21 +33,20 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        // [HttpPost]
-        // public IActionResult CreateUser([FromBody] User user)
-        // {
-        //     return new CreatedResult("", _userService.CreateUser(user));
-        // }
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult CreateUser([FromBody] User user) { return Created("", _userService.CreateUser(user)); }
 
-        // [AllowAnonymous]
-        // [HttpGet("authenticate")]
-        // public async Task<IActionResult> Authenticate([FromBody] AuthenticateModel model)
-        // {
-        //     var user = await _userService.Authenticate(model.Username, model.Password);
-        //
-        //     if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
-        //     return Ok(user);
-        // }
+        #region Authentification
+
+        [AllowAnonymous]
+        [HttpGet("/salt/{username}")]
+        public async Task<IActionResult> GetSalt(string username)
+        {
+            var salt = await _userService.GetSalt(username);
+            if (salt == null) return NotFound(new {message = "User with this Username is not found."});
+            return Ok(salt);
+        }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
@@ -53,11 +58,8 @@ namespace API.Controllers
             return Ok(user);
         }
 
-        // public IActionResult LoginUser()
-        // {
-        //     var loggedInUser = _userService.LoginUser(HttpContext.Request.Headers["Authorization"]);
-        //     if (loggedInUser == null) return new UnauthorizedResult();
-        //     return new OkObjectResult(loggedInUser);
-        // }
+        #endregion
+
+        #endregion
     }
 }
