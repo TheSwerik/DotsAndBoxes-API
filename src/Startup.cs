@@ -28,6 +28,8 @@ namespace API
             services.AddAuthentication("BasicAuthentication")
                     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null)
                     .AddCookie();
+            services.AddIdentity<User, IdentityRole>()
+                    .AddEntityFrameworkStores<ApiContext>();
 
             services.AddScoped<UserService>();
         }

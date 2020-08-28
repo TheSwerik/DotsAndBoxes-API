@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using API.Database.Entities;
 using API.Services;
@@ -52,8 +51,6 @@ namespace API.Controllers
         [HttpGet("login")]
         public IActionResult Login()
         {
-            Console.WriteLine("HALLO");
-            Console.WriteLine("Consent: " + HttpContext.Request.Cookies["Consent"]);
             var user = _userService.Login(HttpContext.Request.Headers["Authorization"]);
             if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
 
