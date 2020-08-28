@@ -27,10 +27,10 @@ namespace API.Security
             _userService = userService;
         }
 
-        protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             if (!Request.Headers.ContainsKey("Authorization"))
-                return AuthenticateResult.Fail("Missing Authorization Header");
+                return Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header"));
 
             User user = null;
             try
@@ -44,17 +44,17 @@ namespace API.Security
             }
             catch
             {
-                return AuthenticateResult.Fail("Invalid Authorization Header");
+                return Task.FromResult(AuthenticateResult.Fail("Invalid Authorization Header"));
             }
 
-            if (user == null) return AuthenticateResult.Fail("Invalid Username or Password");
+            if (user == null) return Task.FromResult(AuthenticateResult.Fail("Invalid Username or Password"));
 
             var claims = new[] {new Claim(ClaimTypes.Name, user.Username)};
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
-            return AuthenticateResult.Success(ticket);
+            return Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }
 }
