@@ -7,7 +7,6 @@ namespace API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Produces("application/json", "application/+json")]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
@@ -16,7 +15,6 @@ namespace API.Controllers
 
         [HttpGet] public IActionResult GetAll() { return Ok(_userService.GetAll()); }
 
-        [AllowAnonymous]
         [HttpGet("{username}")]
         public IActionResult Get(string username)
         {
