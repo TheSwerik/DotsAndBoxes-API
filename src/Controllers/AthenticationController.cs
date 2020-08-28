@@ -36,6 +36,12 @@ namespace API.Controllers
             if (model == null) return BadRequest();
             var user = _authenticationService.Register(model);
             if (user == null) return Conflict(new {message = "User with this Username is already exists."});
+
+            user.AuthenticateResponse = new AuthenticateResponse
+                                        {
+                                            IsAuthenticationSuccessful = true,
+                                            Token = GenerateToken(user.Username)
+                                        };
             return Created("", user);
         }
 
@@ -45,21 +51,21 @@ namespace API.Controllers
             var user = _authenticationService.Login(HttpContext.Request.Headers["Authorization"]);
             if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
 
-            var signingCredentials = GetSigningCredentials();
-            var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.Username)};
-            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             user.AuthenticateResponse = new AuthenticateResponse
                                         {
                                             IsAuthenticationSuccessful = true,
-                                            Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions)
+                                            Token = GenerateToken(user.Username)
                                         };
             return Ok(user);
         }
 
-        private SigningCredentials GetSigningCredentials()
+        private string GenerateToken(string username)
         {
             var key = Encoding.UTF8.GetBytes(_jwtSettings.GetSection("securityKey").Value);
-            return new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+            var claims = new List<Claim> {new Claim(ClaimTypes.Name, username)};
+            var tokenOptions = GenerateTokenOptions(credentials, claims);
+            return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
 
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, IEnumerable<Claim> claims)
