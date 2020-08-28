@@ -37,27 +37,23 @@ namespace API
                                        {
                                            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                                            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                                       }).AddJwtBearer(opt =>
-                                                       {
-                                                           opt.TokenValidationParameters =
-                                                               new TokenValidationParameters
-                                                               {
-                                                                   ValidateIssuer = true,
-                                                                   ValidateAudience = true,
-                                                                   ValidateLifetime = true,
-                                                                   ValidateIssuerSigningKey = true,
+                                       })
+                    .AddJwtBearer(opt =>
+                                  {
+                                      opt.TokenValidationParameters =
+                                          new TokenValidationParameters
+                                          {
+                                              ValidateIssuer = true,
+                                              ValidateAudience = true,
+                                              ValidateLifetime = true,
+                                              ValidateIssuerSigningKey = true,
 
-                                                                   ValidIssuer = jwtSettings.GetSection("validIssuer")
-                                                                       .Value,
-                                                                   ValidAudience = jwtSettings
-                                                                       .GetSection("validAudience").Value,
-                                                                   IssuerSigningKey =
-                                                                       new SymmetricSecurityKey(
-                                                                           Encoding.UTF8.GetBytes(
-                                                                               jwtSettings.GetSection("securityKey")
-                                                                                   .Value))
-                                                               };
-                                                       });
+                                              ValidIssuer = jwtSettings.GetSection("validIssuer").Value,
+                                              ValidAudience = jwtSettings.GetSection("validAudience").Value,
+                                              IssuerSigningKey = new SymmetricSecurityKey(
+                                                  Encoding.UTF8.GetBytes(jwtSettings.GetSection("securityKey").Value))
+                                          };
+                                  });
 
             services.AddScoped<UserService>();
             services.AddScoped<AuthenticationService>();
