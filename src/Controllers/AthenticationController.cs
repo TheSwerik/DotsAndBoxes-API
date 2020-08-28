@@ -4,11 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using API.Database.DTOs;
-using API.Database.Entities;
 using API.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -21,63 +17,44 @@ namespace API.Controllers
     {
         #region Attributes
 
-        private readonly UserService _userService;
-        private readonly IConfiguration _configuration;
+        private readonly AuthenticationService _authenticationService;
         private readonly IConfigurationSection _jwtSettings;
 
-        public AuthenticationController(UserService userService, IConfiguration configuration)
+        public AuthenticationController(AuthenticationService authenticationService, IConfiguration configuration)
         {
-            _userService = userService;
-            _configuration = configuration;
-            _jwtSettings = _configuration.GetSection("JwtSettings");
+            _authenticationService = authenticationService;
+            _jwtSettings = configuration.GetSection("JwtSettings");
         }
 
         #endregion
 
         #region Methods
 
-        [AllowAnonymous]
         [HttpPost]
-        public IActionResult Register([FromBody] AuthenticateModel model)
+        public IActionResult Register([FromBody] AuthenticateDTO model)
         {
-            var user = _userService.Register(model);
+            if (model == null) return BadRequest();
+            var user = _authenticationService.Register(model);
             if (user == null) return Conflict(new {message = "User with this Username is already exists."});
-            return Ok(user);
+            return Created("", user);
         }
 
-        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
-            var user = _userService.Login(HttpContext.Request.Headers["Authorization"]);
-            if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
-
-            var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.Username)};
-
-            // string[] roles = user.Roles.Split(",");
-            // claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-            var props = new AuthenticationProperties {IsPersistent = true};
-            // var props = new AuthenticationProperties {IsPersistent = model.RememberMe};
-
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, props).Wait();
-
-            return Ok(user);
-        }
-
-        [HttpPost("Login")]
-        public IActionResult Login([FromBody] User userForAuthentication)
-        {
-            var user = _userService.Login(HttpContext.Request.Headers["Authorization"]);
+            var user = _authenticationService.Login(HttpContext.Request.Headers["Authorization"]);
             if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
 
             var signingCredentials = GetSigningCredentials();
             var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.Username)};
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return Ok(new AuthResponseDto {IsAuthSuccessful = true, Token = token});
+            user.AuthenticateResponseDto = new AuthenticateResponseDTO
+                                           {
+                                               IsAuthenticationSuccessful = true,
+                                               Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions)
+                                           };
+
+            return Ok(user);
         }
 
         private SigningCredentials GetSigningCredentials()

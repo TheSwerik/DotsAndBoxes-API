@@ -1,7 +1,9 @@
 using System.Text;
 using API.Database;
 using API.Database.Entities;
+using API.Security;
 using API.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using AuthenticationService = API.Services.AuthenticationService;
 
 namespace API
 {
@@ -26,9 +29,8 @@ namespace API
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"),
                                               ServiceLifetime.Singleton);
 
-            // services.AddAuthentication("BasicAuthentication")
-            //         .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null)
-            //         .AddCookie();
+            services.AddAuthentication("BasicAuthentication")
+                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
             var jwtSettings = Configuration.GetSection("JwtSettings");
             services.AddAuthentication(opt =>
@@ -58,6 +60,7 @@ namespace API
                                                        });
 
             services.AddScoped<UserService>();
+            services.AddScoped<AuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

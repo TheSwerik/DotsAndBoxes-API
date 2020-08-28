@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Database.Entities
+namespace API.Database.DTOs
 {
-    public class AuthenticateModel
+    // ReSharper disable once InconsistentNaming
+    public class AuthenticateDTO
     {
         [Required] public string Username { get; set; }
         [Required] public string Password { get; set; }

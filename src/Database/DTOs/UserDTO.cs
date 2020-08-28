@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace API.Database.DTOs
 {
@@ -9,12 +7,10 @@ namespace API.Database.DTOs
     {
         public UserDTO() { }
 
-        public UserDTO(string username)
-        {
-            Username = username;
-        }
+        public UserDTO(string username) { Username = username; }
 
-        [Key] [Required] public string Username { get; set; }
+        [Required] public string Username { get; set; }
+        public AuthenticateResponseDTO AuthenticateResponseDto { get; set; }
         public override string ToString() { return $"{{ Username: {Username} }}"; }
     }
 }
