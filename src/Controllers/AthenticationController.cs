@@ -33,7 +33,7 @@ namespace API.Controllers
         [HttpPost]
         public IActionResult Register([FromBody] AuthenticateDTO model)
         {
-            if (model == null) return BadRequest();
+            if (model == null) return BadRequest(new {message = "User is Empty."});
             var user = _authenticationService.Register(model);
             if (user == null) return Conflict(new {message = "User with this Username is already exists."});
 
