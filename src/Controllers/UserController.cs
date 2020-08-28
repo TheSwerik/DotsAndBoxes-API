@@ -1,5 +1,9 @@
-﻿using API.Database.Entities;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using API.Database.Entities;
 using API.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,6 +53,19 @@ namespace API.Controllers
         {
             var user = _userService.Login(HttpContext.Request.Headers["Authorization"]);
             if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
+
+            var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.Username)};
+
+            // string[] roles = user.Roles.Split(",");
+            // claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+            var props = new AuthenticationProperties {IsPersistent = true};
+            // var props = new AuthenticationProperties {IsPersistent = model.RememberMe};
+
+            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, props).Wait();
+
             return Ok(user);
         }
 

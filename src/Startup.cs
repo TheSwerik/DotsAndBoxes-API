@@ -26,7 +26,8 @@ namespace API
                                               ServiceLifetime.Singleton);
 
             services.AddAuthentication("BasicAuthentication")
-                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+                    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null)
+                    .AddCookie();
 
             services.AddScoped<UserService>();
         }
