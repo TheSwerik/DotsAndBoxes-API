@@ -47,14 +47,12 @@ namespace API.Controllers
 
             var signingCredentials = GetSigningCredentials();
             var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.Username)};
-            Console.WriteLine();
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             user.AuthenticateResponse = new AuthenticateResponse
                                         {
                                             IsAuthenticationSuccessful = true,
                                             Token = new JwtSecurityTokenHandler().WriteToken(tokenOptions)
                                         };
-            Console.WriteLine(user);
             return Ok(user);
         }
 
