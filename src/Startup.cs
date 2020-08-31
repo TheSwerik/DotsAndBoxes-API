@@ -20,7 +20,7 @@ namespace API
     {
         public Startup(IConfiguration configuration) { Configuration = configuration; }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -29,9 +29,10 @@ namespace API
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"),
                                               ServiceLifetime.Singleton);
 
+            #region Authentication
+
             services.AddAuthentication("BasicAuthentication")
                     .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
-
             var jwtSettings = Configuration.GetSection("JwtSettings");
             services.AddAuthentication(opt =>
                                        {
@@ -54,6 +55,8 @@ namespace API
                                                   Encoding.UTF8.GetBytes(jwtSettings.GetSection("securityKey").Value))
                                           };
                                   });
+
+            #endregion
 
             services.AddScoped<UserService>();
             services.AddScoped<AuthenticationService>();

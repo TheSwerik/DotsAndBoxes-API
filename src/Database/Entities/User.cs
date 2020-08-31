@@ -1,4 +1,8 @@
-﻿using System;
+﻿// ReSharper disable UnusedMember.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 

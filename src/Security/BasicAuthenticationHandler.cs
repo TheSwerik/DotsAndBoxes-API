@@ -32,7 +32,7 @@ namespace API.Security
             if (!Request.Headers.ContainsKey("Authorization"))
                 return Task.FromResult(AuthenticateResult.Fail("Missing Authorization Header"));
 
-            User user = null;
+            User user;
             try
             {
                 var authHeader = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
