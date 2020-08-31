@@ -10,11 +10,8 @@ namespace API.Database.DTOs
         public UserDTO(string username) { Username = username; }
 
         [Required] public string Username { get; set; }
-        public AuthenticateResponse AuthenticateResponse { get; set; }
+        public string Token { get; set; }
 
-        public override string ToString()
-        {
-            return $"{{ Username: {Username} | AuthenticateResponse: {AuthenticateResponse} }}";
-        }
+        public override string ToString() { return $"{{ Username: {Username} | Token: {Token} }}"; }
     }
 }

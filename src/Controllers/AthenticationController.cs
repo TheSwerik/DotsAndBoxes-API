@@ -37,11 +37,7 @@ namespace API.Controllers
             var user = _authenticationService.Register(model);
             if (user == null) return Conflict(new {message = "User with this Username is already exists."});
 
-            user.AuthenticateResponse = new AuthenticateResponse
-                                        {
-                                            IsAuthenticationSuccessful = true,
-                                            Token = GenerateToken(user.Username)
-                                        };
+            user.Token = GenerateToken(user.Username);
             return Created("", user);
         }
 
@@ -51,11 +47,7 @@ namespace API.Controllers
             var user = _authenticationService.Login(HttpContext.Request.Headers["Authorization"]);
             if (user == null) return Unauthorized(new {message = "Username or password is incorrect"});
 
-            user.AuthenticateResponse = new AuthenticateResponse
-                                        {
-                                            IsAuthenticationSuccessful = true,
-                                            Token = GenerateToken(user.Username)
-                                        };
+            user.Token = GenerateToken(user.Username);
             return Ok(user);
         }
 
