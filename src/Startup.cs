@@ -87,7 +87,9 @@ namespace API
 
 
             var context = app.ApplicationServices.GetService<ApiContext>();
+            #if DEBUG
             AddTestData(context);
+            #endif
         }
 
         private static void AddTestData(ApiContext context)
