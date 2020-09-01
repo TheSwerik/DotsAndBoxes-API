@@ -12,7 +12,11 @@ namespace API.Security
     {
         public static IEnumerable<UserDTO> ToDTO(this IEnumerable<User> users) { return users.Select(x => x.ToDTO()); }
         public static UserDTO ToDTO(this User user) { return new UserDTO(user.Username); }
-        public static string GetSalt(this User user) { return user.Password.Substring(0, 27) + '='; }
+
+        public static byte[] GetSalt(this User user)
+        {
+            return Convert.FromBase64String(user.Password).Take(20).ToArray();
+        }
 
         public static bool HasSameUsernameAs(this User user, AuthenticateDTO other)
         {

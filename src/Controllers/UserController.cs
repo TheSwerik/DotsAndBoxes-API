@@ -19,7 +19,7 @@ namespace API.Controllers
         public IActionResult Get(string username)
         {
             var user = _userService.Get(username);
-            if (user == null) return NotFound(new {message = "User with this Username is not found."});
+            if (user == null) return NotFound("User with this Username is not found.");
             return Ok(user);
         }
     }
