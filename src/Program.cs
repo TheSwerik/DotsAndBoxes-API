@@ -1,6 +1,7 @@
 using System.Globalization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 
 namespace API
 {
@@ -8,6 +9,7 @@ namespace API
     {
         public static void Main(string[] args)
         {
+            IdentityModelEventSource.ShowPII = true;
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             CreateHostBuilder(args).Build().Run();
         }

@@ -1,10 +1,10 @@
-﻿using System;
-using API.Database.Entities;
-using API.Services;
+﻿using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
@@ -13,15 +13,14 @@ namespace API.Controllers
 
         public UserController(UserService userService) { _userService = userService; }
 
-        [HttpGet] public IActionResult GetAllUsers() { return new OkObjectResult(_userService.GetAllUsers()); }
+        [HttpGet] public IActionResult GetAll() { return Ok(_userService.GetAll()); }
 
-        [HttpGet("{id:guid}")]
-        public IActionResult GetUser(Guid id) { return new OkObjectResult(_userService.GetUser(id)); }
-
-        [HttpPost]
-        public IActionResult CreateUser([FromBody] User user)
+        [HttpGet("{username}")]
+        public IActionResult Get(string username)
         {
-            return new CreatedResult("", _userService.CreateUser(user));
+            var user = _userService.Get(username);
+            if (user == null) return NotFound("User with this Username is not found.");
+            return Ok(user);
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using API.Database;
-using API.Database.Entities;
+using API.Database.DTOs;
+using API.Security;
 using Microsoft.Extensions.Logging;
 
 namespace API.Services
@@ -17,16 +17,7 @@ namespace API.Services
             _apiContext = apiContext;
         }
 
-        public User CreateUser(User user)
-        {
-            var newUser = new User(user.Username, user.PasswordHash, user.PasswordSalt);
-            _apiContext.Users.Add(newUser);
-            _apiContext.SaveChanges();
-            _logger.LogInformation($"Created new User: {newUser}");
-            return newUser;
-        }
-
-        public IEnumerable<User> GetAllUsers() { return _apiContext.Users; }
-        public User GetUser(Guid id) { return _apiContext.Users.Find(id); }
+        public IEnumerable<UserDTO> GetAll() { return _apiContext.Users.ToDTO(); }
+        public UserDTO Get(string username) { return _apiContext.Users.Find(username).ToDTO(); }
     }
 }
