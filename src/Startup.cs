@@ -97,7 +97,7 @@ namespace API
             var testUser1 = new User("Erik", "i551CkevribikEUMBvlqgStoUnZsaIt6cevVixESsSM49sL53nOndg==");
             context.Users.Add(testUser1);
 
-            var testUser2 = new User("Dennis", "2");
+            var testUser2 = new User("Dennis", "GMXIenOmevX3//Ryb6ve4rvPPEZDOJqm4eaVV0GpNSLigClAhdnj+g==");
             context.Users.Add(testUser2);
 
             context.SaveChanges();
