@@ -1,6 +1,7 @@
 using System.Text;
 using API.Database;
 using API.Database.Entities;
+using API.Exceptions;
 using API.Security;
 using API.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -25,7 +26,8 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            // services.AddControllers();
+            services.AddControllers(options => options.Filters.Add(new HttpResponseExceptionFilter()));
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"),
                                               ServiceLifetime.Singleton);
 

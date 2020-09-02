@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using API.Database;
 using API.Database.DTOs;
+using API.Exceptions;
 using API.Security;
 using Microsoft.Extensions.Logging;
 
@@ -18,6 +19,12 @@ namespace API.Services
         }
 
         public IEnumerable<UserDTO> GetAll() { return _apiContext.Users.ToDTO(); }
-        public UserDTO Get(string username) { return _apiContext.Users.Find(username).ToDTO(); }
+
+        public UserDTO Get(string username)
+        {
+            var user = _apiContext.Users.Find(username);
+            if (user == null) throw new UserNotFoundException(username);
+            return user.ToDTO();
+        }
     }
 }
