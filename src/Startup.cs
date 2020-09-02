@@ -30,6 +30,7 @@ namespace API
             services.AddControllers(options => options.Filters.Add(new HttpResponseExceptionFilter()));
             services.AddDbContext<ApiContext>(opt => opt.UseInMemoryDatabase("DotsAndBoxes"),
                                               ServiceLifetime.Singleton);
+            //ass
 
             #region Authentication
 
