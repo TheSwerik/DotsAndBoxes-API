@@ -11,7 +11,7 @@ namespace API.Exceptions
         public void OnActionExecuted(ActionExecutedContext context)
         {
             if (!(context.Exception is HttpResponseException exception)) return;
-            context.Result = new ObjectResult(exception.Value) {StatusCode = exception.Status};
+            context.Result = new ObjectResult(exception.Value) {StatusCode = (int) exception.Status};
             context.ExceptionHandled = true;
             if (exception.PrintStackTrace) Console.WriteLine(context.Exception.ToString());
         }

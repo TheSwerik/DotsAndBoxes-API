@@ -4,8 +4,8 @@
     {
         public UserNotFoundException(string username)
         {
-            Status = 404;
-            Value = username;
+            Status = HttpResponseCode.NotFound;
+            Value = $"User with this {username} is not found.";
             PrintStackTrace = false;
         }
     }

@@ -4,7 +4,7 @@ namespace API.Exceptions
 {
     public class HttpResponseException : Exception
     {
-        public int Status { get; set; } = 500;
+        public HttpResponseCode Status { get; set; } = HttpResponseCode.InternalServerError;
         public object Value { get; set; }
         public bool PrintStackTrace { get; set; } = false;
     }

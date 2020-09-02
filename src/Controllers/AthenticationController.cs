@@ -35,8 +35,6 @@ namespace API.Controllers
         {
             if (model == null) return BadRequest("User is Empty.");
             var user = _authenticationService.Register(model);
-            if (user == null) return Conflict("User with this Username is already exists.");
-
             user.Token = GenerateToken(user.Username);
             return Created("", user);
         }
@@ -45,8 +43,6 @@ namespace API.Controllers
         public IActionResult Login()
         {
             var user = _authenticationService.Login(HttpContext.Request.Headers["Authorization"]);
-            if (user == null) return Unauthorized("Username or password is incorrect");
-
             user.Token = GenerateToken(user.Username);
             return Ok(user);
         }

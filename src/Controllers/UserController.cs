@@ -15,12 +15,6 @@ namespace API.Controllers
 
         [HttpGet] public IActionResult GetAll() { return Ok(_userService.GetAll()); }
 
-        [HttpGet("{username}")]
-        public IActionResult Get(string username)
-        {
-            var user = _userService.Get(username);
-            if (user == null) return NotFound("User with this Username is not found.");
-            return Ok(user);
-        }
+        [HttpGet("{username}")] public IActionResult Get(string username) { return Ok(_userService.Get(username)); }
     }
 }

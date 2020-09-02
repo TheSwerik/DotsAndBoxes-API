@@ -4,6 +4,7 @@ using System.Text;
 using API.Database;
 using API.Database.DTOs;
 using API.Database.Entities;
+using API.Exceptions;
 using API.Security;
 using Microsoft.Extensions.Logging;
 
@@ -28,7 +29,8 @@ namespace API.Services
 
         public UserDTO Register(AuthenticateDTO model)
         {
-            if (_apiContext.Users.ToList().Any(u => u.HasSameUsernameAs(model))) return null;
+            if (_apiContext.Users.ToList().Any(u => u.HasSameUsernameAs(model)))
+                throw new UserAlreadyExistsException(model.Username);
 
             var user = new User(model.Username, SecurityService.HashPassword(model.Password));
             _apiContext.Users.Add(user);
@@ -43,7 +45,9 @@ namespace API.Services
             var userData = Encoding.GetEncoding("ISO-8859-1")
                                    .GetString(Convert.FromBase64String(encodedAuthorization))
                                    .Split(":");
-            return Authenticate(userData[0], userData[1])?.ToDTO();
+            var authUser = Authenticate(userData[0], userData[1]);
+            if (authUser == null) throw new WrongCredentialsException();
+            return authUser.ToDTO();
         }
 
         public User Authenticate(string username, string password)
