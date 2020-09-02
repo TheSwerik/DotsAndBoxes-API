@@ -6,6 +6,7 @@
         {
             Status = 404;
             Value = username;
+            PrintStackTrace = false;
         }
     }
 }

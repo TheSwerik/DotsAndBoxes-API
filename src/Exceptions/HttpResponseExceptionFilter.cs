@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace API.Exceptions
@@ -12,6 +13,7 @@ namespace API.Exceptions
             if (!(context.Exception is HttpResponseException exception)) return;
             context.Result = new ObjectResult(exception.Value) {StatusCode = exception.Status};
             context.ExceptionHandled = true;
+            if (exception.PrintStackTrace) Console.WriteLine(context.Exception.ToString());
         }
 
         public int Order { get; set; } = int.MaxValue - 10;
